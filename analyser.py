@@ -90,3 +90,19 @@ def parse_response(text):
             result["summary"] += line + " "
 
     return result
+def rewrite_bullet(bullet_text):
+    prompt = f"""
+You are an expert resume writer.
+Rewrite this weak resume bullet point to be stronger, more impactful, and ATS-friendly.
+Use action verbs, add metrics where possible, and make it concise.
+
+Original: {bullet_text}
+
+Return ONLY the rewritten bullet point, nothing else.
+"""
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=200
+    )
+    return response.choices[0].message.content.strip()
