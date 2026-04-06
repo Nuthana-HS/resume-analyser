@@ -3,7 +3,6 @@ import os
 from parser import extract_text_from_pdf, parse_sections
 from analyser import analyse_resume
 
-import os
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "uploads"
 os.makedirs("uploads", exist_ok=True)
