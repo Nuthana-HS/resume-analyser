@@ -9,25 +9,47 @@
     body { font-family: sans-serif; background: #f0f4f8; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
     .card { background: white; padding: 40px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 520px; }
     h1 { font-size: 24px; margin-bottom: 8px; color: #1a1a2e; }
-    p { color: #666; margin-bottom: 24px; font-size: 14px; }
+    p.subtitle { color: #666; margin-bottom: 24px; font-size: 14px; }
     label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #333; }
     input[type="file"] { width: 100%; padding: 10px; border: 2px dashed #c0c0c0; border-radius: 8px; margin-bottom: 20px; cursor: pointer; }
     textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; resize: vertical; margin-bottom: 24px; min-height: 100px; }
     button { width: 100%; padding: 14px; background: #4f46e5; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: 600; }
     button:hover { background: #4338ca; }
+    button:disabled { background: #a5b4fc; cursor: not-allowed; }
+
+    .spinner-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.85); z-index: 999; flex-direction: column; justify-content: center; align-items: center; }
+    .spinner-overlay.active { display: flex; }
+    .spinner { width: 52px; height: 52px; border: 5px solid #e0e7ff; border-top: 5px solid #4f46e5; border-radius: 50%; animation: spin 0.9s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner-text { margin-top: 16px; font-size: 15px; color: #4f46e5; font-weight: 600; }
+    .spinner-sub { margin-top: 6px; font-size: 13px; color: #888; }
   </style>
 </head>
 <body>
+
+  <div class="spinner-overlay" id="spinner">
+    <div class="spinner"></div>
+    <div class="spinner-text">Analysing your resume...</div>
+    <div class="spinner-sub">This may take 10–20 seconds</div>
+  </div>
+
   <div class="card">
     <h1>Resume Analyser</h1>
-    <p>Upload your resume PDF and get AI-powered feedback using Gemini.</p>
-    <form action="/analyse" method="POST" enctype="multipart/form-data">
+    <p class="subtitle">Upload your resume PDF and get AI-powered feedback instantly.</p>
+    <form action="/analyse" method="POST" enctype="multipart/form-data" onsubmit="showSpinner()">
       <label>Upload Resume (PDF)</label>
-      <input type="file" name="resume" accept=".pdf" required>
-      <label>Job Description (optional)</label>
+     <input type="file" name="resume" accept=".pdf,.docx" required>
       <textarea name="job_description" placeholder="Paste the job description here to get a match score..."></textarea>
-      <button type="submit">Analyse My Resume</button>
+      <button type="submit" id="submitBtn">Analyse My Resume</button>
     </form>
   </div>
+
+  <script>
+    function showSpinner() {
+      document.getElementById('spinner').classList.add('active');
+      document.getElementById('submitBtn').disabled = true;
+      document.getElementById('submitBtn').textContent = 'Analysing...';
+    }
+  </script>
 </body>
 </html>
