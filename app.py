@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for
-from parser import extract_text_from_pdf, parse_sections
+from parser import extract_text, parse_sections
 from analyser import analyse_resume
 
 app = Flask(__name__)
@@ -27,13 +27,20 @@ def analyse():
     filepath = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
     file.save(filepath)
 
-    raw_text = extract_text_from_pdf(filepath)
+    raw_text = extract_text(filepath)
     sections = parse_sections(raw_text)
     result = analyse_resume(sections["full_text"], job_description)
 
     os.remove(filepath)
 
     return render_template("result.html", result=result)
-
+@app.route("/rewrite", methods=["POST"])
+def rewrite():
+    bullet = request.form.get("bullet", "")
+    if not bullet:
+        return {"rewritten": "No text provided"}, 400
+    from analyser import rewrite_bullet
+    result = rewrite_bullet(bullet)
+    return {"rewritten": result}
 if __name__ == "__main__":
     app.run(debug=True)
