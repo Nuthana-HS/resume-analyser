@@ -82,29 +82,33 @@
   </div>
 
   <script>
-    const score = {{ result.ats_score }};
-    const bar = document.getElementById('scoreBar');
-    const num = document.getElementById('scoreNum');
-    const msg = document.getElementById('scoreMsg');
+    window.onload = function() {
+      var score = parseInt("{{ result.ats_score }}");
+      var bar = document.getElementById('scoreBar');
+      var num = document.getElementById('scoreNum');
+      var msg = document.getElementById('scoreMsg');
 
-    setTimeout(() => { bar.style.width = score + '%'; }, 100);
+      setTimeout(function() {
+        bar.style.width = score + '%';
+      }, 200);
 
-    if (score >= 75) {
-      bar.style.background = '#10b981';
-      num.style.color = '#10b981';
-      msg.style.color = '#10b981';
-      msg.textContent = 'Excellent! Your resume is ATS ready.';
-    } else if (score >= 50) {
-      bar.style.background = '#f59e0b';
-      num.style.color = '#f59e0b';
-      msg.style.color = '#f59e0b';
-      msg.textContent = 'Good, but needs some improvements.';
-    } else {
-      bar.style.background = '#ef4444';
-      num.style.color = '#ef4444';
-      msg.style.color = '#ef4444';
-      msg.textContent = 'Needs significant improvement.';
-    }
+      if (score >= 75) {
+        bar.style.background = '#10b981';
+        num.style.color = '#10b981';
+        msg.style.color = '#10b981';
+        msg.textContent = 'Excellent! Your resume is ATS ready.';
+      } else if (score >= 50) {
+        bar.style.background = '#f59e0b';
+        num.style.color = '#f59e0b';
+        msg.style.color = '#f59e0b';
+        msg.textContent = 'Good, but needs some improvements.';
+      } else {
+        bar.style.background = '#ef4444';
+        num.style.color = '#ef4444';
+        msg.style.color = '#ef4444';
+        msg.textContent = 'Needs significant improvement.';
+      }
+    };
   </script>
 </body>
 </html>
