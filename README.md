@@ -1,56 +1,48 @@
-# Resume Analyser — AI-Powered Resume Feedback Tool
+# Resume Analyser — AI-Powered Resume Feedback Web App
 
-A web application that analyses your resume using AI (Groq + Llama 3) and gives you an ATS compatibility score, matched/missing keywords, strengths, improvements, and rewrite tips — all in seconds.
+A web application that analyses your resume using AI and gives you instant feedback including an ATS compatibility score, matched keywords, missing keywords, strengths, improvements, and rewrite tips.
 
----
+**Live Demo:** https://resume-analyser-khw8.onrender.com
 
-## What This Project Does
-
-Upload any PDF resume and (optionally) paste a job description. The app will:
-
-- Give you an **ATS Compatibility Score** out of 100
-- Show **matched keywords** found in your resume (green tags)
-- Show **missing keywords** you should add (red tags)
-- List your **strengths** based on the resume content
-- List **areas to improve**
-- Give **specific rewrite tips** to make your resume stronger
-- Write a **personalised summary** of your resume
+**GitHub:** https://github.com/Nuthana-HS/resume-analyser
 
 ---
 
-## Project Structure
+## What Is This?
 
-```
-resume-analyser/
-├── app.py                  ← Main Flask web server (routes and logic)
-├── analyser.py             ← Groq AI integration and response parsing
-├── parser.py               ← PDF text extraction and section splitting
-├── .env                    ← Secret API key (never share this file)
-├── requirements.txt        ← All Python libraries needed
-├── templates/
-│   ├── index.html          ← Upload page (the homepage)
-│   └── result.html         ← Results dashboard page
-└── uploads/                ← Temporary folder for uploaded PDFs
-```
+This is a **web app** — it runs in your browser like a website, but does intelligent AI-powered work like an app. You upload your resume PDF, and within seconds the AI analyses it and gives you detailed, personalised feedback.
 
 ---
 
-## How It Works — Step by Step
+## What It Does
+
+- Gives you an **ATS Compatibility Score** out of 100
+- Shows **matched keywords** found in your resume (green tags)
+- Shows **missing keywords** you should add (red tags)
+- Lists your **strengths** based on resume content
+- Lists **areas to improve**
+- Gives **specific rewrite tips** to strengthen your resume
+- Writes a **personalised summary** of your profile
+- Optionally compares against a **job description** for targeted analysis
+
+---
+
+## How It Works
 
 ```
 User uploads PDF resume
         ↓
-parser.py reads the PDF (using PyMuPDF)
+PyMuPDF extracts all text from the PDF
         ↓
 Text is split into sections: Skills, Experience, Education, Projects
         ↓
-analyser.py sends the text + job description to Groq AI (Llama 3.3 70B model)
+Groq AI (Llama 3.3 70B) analyses the resume with a structured prompt
         ↓
-AI returns structured analysis: score, keywords, strengths, tips
+AI returns: score, keywords, strengths, improvements, rewrite tips
         ↓
-Flask renders result.html with the full analysis
+Flask renders the results on a beautiful dashboard
         ↓
-User sees their results in the browser
+User sees full analysis in the browser
 ```
 
 ---
@@ -59,139 +51,152 @@ User sees their results in the browser
 
 | Technology | Purpose |
 |---|---|
-| Python 3.12 | Main programming language |
-| Flask | Web framework (runs the local website) |
+| Python 3 | Main programming language |
+| Flask | Web framework — runs the website |
 | PyMuPDF (fitz) | Reads and extracts text from PDF files |
-| Groq API | AI provider — fast and free |
-| Llama 3.3 70B | The AI model that analyses the resume |
-| python-dotenv | Loads the API key from the .env file securely |
-| HTML + CSS | Frontend UI (upload page and results page) |
+| Groq API | Free AI provider — fast inference |
+| Llama 3.3 70B | AI model that analyses the resume |
+| python-dotenv | Loads API key securely from .env file |
+| Gunicorn | Production web server for deployment |
+| Render.com | Free cloud hosting platform |
+| GitHub | Version control and code hosting |
 
 ---
 
-## Setup Instructions (Ubuntu/Linux)
-
-### Step 1 — Install Python
-
-```bash
-sudo apt update
-sudo apt install python3 python3-pip python3-venv -y
-```
-
-### Step 2 — Clone or create the project folder
-
-```bash
-mkdir resume-analyser
-cd resume-analyser
-```
-
-### Step 3 — Create a virtual environment
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
-You will see `(venv)` appear in your terminal. This means the virtual environment is active.
-
-### Step 4 — Install all required libraries
-
-```bash
-pip install flask pymupdf python-dotenv groq
-```
-
-Or if a `requirements.txt` is provided:
-
-```bash
-pip install -r requirements.txt
-```
-
-### Step 5 — Get a free Groq API key
-
-1. Go to **https://console.groq.com**
-2. Sign up for a free account
-3. Click **API Keys** → **Create API Key**
-4. Copy the key (starts with `gsk_...`)
-
-### Step 6 — Add your API key
-
-Create a `.env` file in the project root:
-
-```bash
-nano .env
-```
-
-Add this line (replace with your actual key):
+## Project Structure
 
 ```
-GROQ_API_KEY=gsk_your_actual_key_here
+resume-analyser/
+├── app.py                  ← Main Flask web server (routes)
+├── analyser.py             ← Groq AI integration and response parser
+├── parser.py               ← PDF text extraction and section splitter
+├── .env                    ← Secret API key (never share or push this)
+├── .gitignore              ← Files to exclude from GitHub
+├── Procfile                ← Tells Render how to start the app
+├── requirements.txt        ← Python libraries needed
+├── README.md               ← This file
+└── templates/
+    ├── index.html          ← Upload page (homepage)
+    └── result.html         ← Results dashboard page
 ```
-
-Save: `Ctrl+O` → Enter → `Ctrl+X`
-
-### Step 7 — Create required folders
-
-```bash
-mkdir uploads templates
-```
-
-### Step 8 — Run the app
-
-```bash
-python3 app.py
-```
-
-### Step 9 — Open in browser
-
-Go to: **http://127.0.0.1:5000**
-
----
-
-## How to Use
-
-1. Open **http://127.0.0.1:5000** in your browser
-2. Click **Choose File** and select your resume PDF
-3. (Optional) Paste a job description in the text box
-4. Click **Analyse My Resume**
-5. Wait 5–10 seconds for the AI to analyse
-6. View your full results on the results page
 
 ---
 
 ## File Explanations
 
 ### `app.py`
-The main Flask application. It handles two routes:
-- `GET /` — Shows the upload page (index.html)
-- `POST /analyse` — Receives the uploaded PDF, runs the analysis, and shows results
+The main Flask application. Handles two routes:
+- `GET /` — Shows the upload page
+- `POST /analyse` — Receives the PDF, runs analysis, shows results
+- Uses `/tmp/uploads` folder for temporary file storage (works on all servers)
 
 ### `parser.py`
-Uses PyMuPDF to open the PDF and extract all text page by page. Then splits the text into sections (Skills, Experience, Education, Projects) using keyword detection.
+Uses PyMuPDF to open PDF files and extract all text page by page. Then splits the text into sections (Skills, Experience, Education, Projects) using keyword detection on each line.
 
 ### `analyser.py`
-Connects to the Groq API using your API key. Sends a carefully written prompt with the resume text and job description. Parses the AI's structured response into a Python dictionary with score, keywords, strengths, improvements, and tips.
+Connects to Groq API using your API key. Sends a carefully structured prompt with the resume text and optional job description. Parses the AI's structured response into a Python dictionary with score, keywords, strengths, improvements, and rewrite tips.
 
 ### `templates/index.html`
-A clean HTML form where users upload their PDF resume and paste an optional job description.
+A clean upload form where users choose their PDF resume and optionally paste a job description for targeted analysis.
 
 ### `templates/result.html`
-Displays the AI analysis results using HTML cards: ATS score, summary, keyword tags, bullet-point lists for strengths/improvements/tips.
+Displays the full AI analysis: ATS score card, summary paragraph, keyword tag clouds (green = matched, red = missing), and bullet-point lists for strengths, improvements, and rewrite tips.
+
+### `Procfile`
+Tells Render.com to start the app using gunicorn: `web: gunicorn app:app`
 
 ### `.env`
-Stores your secret Groq API key. This file should **never** be shared or pushed to GitHub.
+Stores your secret Groq API key locally. Never push this to GitHub.
 
 ---
 
-## Requirements File
+## Local Setup (Run on Your Computer)
 
-Create a `requirements.txt` with:
+### Requirements
+- Ubuntu / Linux / Mac / Windows
+- Python 3.10 or higher
 
+### Step 1 — Clone the repository
+```bash
+git clone https://github.com/Nuthana-HS/resume-analyser.git
+cd resume-analyser
 ```
-flask
-pymupdf
-python-dotenv
-groq
+
+### Step 2 — Create virtual environment
+```bash
+python3 -m venv venv
+source venv/bin/activate
 ```
+
+### Step 3 — Install libraries
+```bash
+pip install -r requirements.txt
+```
+
+### Step 4 — Get a free Groq API key
+1. Go to **https://console.groq.com**
+2. Sign up free (no credit card needed)
+3. Click **API Keys** → **Create API Key**
+4. Copy the key (starts with `gsk_...`)
+
+### Step 5 — Add your API key
+```bash
+nano .env
+```
+Add this line:
+```
+GROQ_API_KEY=gsk_your_actual_key_here
+```
+Save: `Ctrl+O` → Enter → `Ctrl+X`
+
+### Step 6 — Run the app
+```bash
+python3 app.py
+```
+
+### Step 7 — Open in browser
+Go to: **http://127.0.0.1:5000**
+
+---
+
+## How to Use
+
+1. Open the app in your browser
+2. Click **Choose File** and select your resume PDF
+3. Optionally paste a job description for targeted scoring
+4. Click **Analyse My Resume**
+5. Wait 5-10 seconds for the AI to analyse
+6. View your complete results on the dashboard
+
+---
+
+## Deployment (Render.com — Free)
+
+This app is deployed on Render.com for free.
+
+### Steps to deploy your own instance:
+
+1. Push your code to GitHub
+2. Go to **render.com** → sign up with GitHub
+3. Click **New** → **Web Service**
+4. Connect your GitHub repo
+5. Set these settings:
+   - Build Command: `pip install -r requirements.txt`
+   - Start Command: `gunicorn app:app`
+6. Add Environment Variable:
+   - Key: `GROQ_API_KEY`
+   - Value: your `gsk_...` key
+7. Click **Create Web Service**
+8. Wait 2-3 minutes → get your live URL!
+
+---
+
+## API Used — Groq
+
+- **Website:** https://console.groq.com
+- **Free tier:** Yes — 14,400 requests/day free
+- **Model used:** `llama-3.3-70b-versatile`
+- **Why Groq:** Fastest free AI API available, results in ~2 seconds
 
 ---
 
@@ -199,34 +204,44 @@ groq
 
 | Error | Cause | Fix |
 |---|---|---|
-| `command 'python' not found` | Ubuntu uses `python3` | Use `python3` instead of `python` |
-| `429 RESOURCE_EXHAUSTED` | Gemini free quota exceeded | Switch to Groq API (free, generous limits) |
-| `model_decommissioned` | Old Groq model removed | Change model to `llama-3.3-70b-versatile` |
-| `ModuleNotFoundError` | Library not installed | Run `pip install <library-name>` |
-| `(venv)` not showing | Virtual environment not active | Run `source venv/bin/activate` |
+| `command 'python' not found` | Ubuntu uses python3 | Use `python3` instead of `python` |
+| `429 RESOURCE_EXHAUSTED` | Gemini quota exceeded | Switch to Groq API (free) |
+| `model_decommissioned` | Old Groq model removed | Use `llama-3.3-70b-versatile` |
+| `FileNotFoundError: uploads/` | Folder doesn't exist on server | Use `/tmp/uploads` in app.py |
+| `ModuleNotFoundError` | Library not installed | Run `pip install -r requirements.txt` |
+| `(venv) not showing` | Virtual env not active | Run `source venv/bin/activate` |
+| App slow on first load | Render free tier sleeps | Wait 30-50 seconds, then it's fast |
 
 ---
 
-## API Used — Groq
+## Future Improvements
 
-- **Website:** https://console.groq.com
-- **Free tier:** Yes — very generous daily limits
-- **Model used:** `llama-3.3-70b-versatile`
-- **Speed:** One of the fastest AI APIs available (results in ~2 seconds)
+- Export analysis report as a downloadable PDF
+- Let AI rewrite weak bullet points automatically
+- Upload two resumes and compare them side by side
+- Auto-fetch job description from a LinkedIn or Indeed URL
+- Save and track multiple resume analyses with user accounts
+- Support DOCX files in addition to PDF
+- Show score improvement chart over multiple submissions
 
 ---
 
-## Future Improvements (Ideas)
+## What I Learned Building This
 
-- Export analysis report as a PDF download
-- Let AI rewrite weak bullet points directly
-- Compare two resumes side by side
-- Add login so users can save their previous analyses
-- Deploy online using Render.com or Railway.app (free hosting)
+- How to extract text from PDF files using Python
+- How to integrate AI APIs (Groq + Llama 3) into a web app
+- How to build a web app using Flask
+- How to use environment variables to keep API keys secure
+- How to use Git and GitHub for version control
+- How to deploy a Python web app to the internet using Render.com
+- How to debug deployment errors (missing folders, dependency conflicts)
 
 ---
 
 ## Author
 
-Built step by step as a beginner Python + AI project.  
-Uses Flask for the backend, PyMuPDF for PDF parsing, and Groq AI for intelligent resume analysis.
+**Nuthana H S**
+Built as a beginner Python + AI project — from zero to a fully deployed AI web app in one session.
+
+- GitHub: https://github.com/Nuthana-HS
+- Live App: https://resume-analyser-khw8.onrender.com
