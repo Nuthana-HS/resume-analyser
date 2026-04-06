@@ -1,7 +1,7 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from parser import extract_text, parse_sections
-from analyser import analyse_resume
+from analyser import analyse_resume, rewrite_bullet
 
 app = Flask(__name__)
 
@@ -34,13 +34,14 @@ def analyse():
     os.remove(filepath)
 
     return render_template("result.html", result=result)
+
 @app.route("/rewrite", methods=["POST"])
 def rewrite():
     bullet = request.form.get("bullet", "")
     if not bullet:
-        return {"rewritten": "No text provided"}, 400
-    from analyser import rewrite_bullet
+        return jsonify({"rewritten": "No text provided"}), 400
     result = rewrite_bullet(bullet)
-    return {"rewritten": result}
+    return jsonify({"rewritten": result})
+
 if __name__ == "__main__":
     app.run(debug=True)
