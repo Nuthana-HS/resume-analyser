@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, jsonify
-from parser import extract_text, parse_sections
+from resume_parser import extract_text, parse_sections
 from analyser import analyse_resume, rewrite_bullet
 
 app = Flask(__name__)
